@@ -1,8 +1,7 @@
 FROM php:7.1-fpm
 
 # PHP config
-ADD conf/symfony.ini /usr/local/etc/php/
-ADD conf/symfony.pool.conf /etc/php/7.1/fpm/pool.d/
+ADD conf/symfony.ini /usr/local/etc/php/conf.d
 RUN apt-get update && apt-get install -y \
         zlib1g-dev \
         libicu-dev \
@@ -39,8 +38,7 @@ RUN chown -R www-data:www-data /var/.composer
 USER www-data
 RUN composer global --no-interaction require symfony/var-dumper squizlabs/php_codesniffer phpmd/phpmd
 USER root
-RUN sed -i '660s/auto_prepend_file =/ /g' /usr/local/etc/php/symfony.ini \
-    && sed -i '660a auto_prepend_file = /var/.composer/vendor/autoload.php' /usr/local/etc/php/symfony.ini
+RUN echo "auto_prepend_file=/var/.composer/vendor/autoload.php" >> /usr/local/etc/php/conf.d/symfony.ini
 
 RUN mkdir -p /etc/phpcs/Merces
 ADD ruleset.xml /etc/phpcs/Merces
