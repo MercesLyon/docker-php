@@ -25,24 +25,17 @@ RUN pecl install redis-3.1.3 \
 RUN curl -s https://getcomposer.org/installer | php
 RUN mv composer.phar /usr/local/bin/composer
 
-ARG GIT_USERNAME="Merces"
-ARG GIT_EMAIL="developer@merces.fr"
-ARG WWW_DATA_UID=1000
-ARG WWW_DATA_GID=1000
-
 # Install git
 RUN apt-get update && apt-get install -y git
-RUN git config --global user.name "$GIT_USERNAME"
-RUN git config --global user.email "$GIT_EMAIL"
 
-# www-data should have different uid depending on host env and/or apache container version
-RUN usermod -u "${WWW_DATA_UID}" www-data
-RUN groupmod -g "${WWW_DATA_GID}" www-data
+# www-data should have uid 1000
+RUN usermod -u 1000 www-data
+RUN groupmod -g 1000 www-data
 
 # Installing composer global dependencies
-ENV COMPOSER_HOME /var/.composer
-RUN mkdir -p "${COMPOSER_HOME}"
-RUN chown -R www-data:www-data "${COMPOSER_HOME}"
+ENV COMPOSER_HOME=/var/.composer
+RUN mkdir -p /var/.composer
+RUN chown -R www-data:www-data /var/.composer
 USER www-data
 RUN composer global --no-interaction require symfony/var-dumper squizlabs/php_codesniffer phpmd/phpmd
 USER root
