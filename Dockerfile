@@ -27,10 +27,6 @@ RUN mv composer.phar /usr/local/bin/composer
 # Install git
 RUN apt-get update && apt-get install -y git
 
-# www-data should have uid 1000
-RUN usermod -u 1000 www-data
-RUN groupmod -g 1000 www-data
-
 # Installing composer global dependencies
 ENV COMPOSER_HOME=/var/.composer
 RUN mkdir -p /var/.composer
@@ -44,13 +40,14 @@ RUN mkdir -p /etc/phpcs/Merces
 ADD ruleset.xml /etc/phpcs/Merces
 RUN /var/.composer/vendor/bin/phpcs --config-set installed_paths /etc/phpcs/Merces
 
-# Install acl
-RUN HTTPDUSER=`ps axo user,comm | grep -E '[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx' | grep -v root | head -1 | cut -d\  -f1`
-RUN setfacl -R -m u:"${HTTPDUSER}":rwX -m u:`whoami`:rwX /var
-RUN setfacl -dR -m u:"${HTTPDUSER}":rwX -m u:`whoami`:rwX /var
-
 # use .ssh from local
 RUN mkdir -p /var/www/.composer
 RUN mkdir -p /var/www/.ssh
-RUN chown -R www-data:www-data /var/www/.composer /var/www/.ssh
 VOLUME /var/www/.ssh
+
+# Entrypoint
+COPY entrypoint.sh /usr/local/bin/
+RUN ln -s /usr/local/bin/entrypoint.sh /entrypoint.sh && chmod +x /entrypoint.sh
+ENTRYPOINT ["entrypoint.sh"]
+
+CMD ["php-fpm"]
