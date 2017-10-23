@@ -18,7 +18,7 @@ RUN pecl install redis-3.1.3 \
     && pecl install xdebug-2.5.0 \
     && docker-php-ext-enable redis xdebug \
     && docker-php-ext-configure intl \
-    && docker-php-ext-install intl pdo pdo_mysql zip gd mbstring curl
+    && docker-php-ext-install intl pdo pdo_mysql zip mbstring curl
 
 # Install composer
 RUN curl -s https://getcomposer.org/installer | php
