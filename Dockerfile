@@ -2,30 +2,33 @@ FROM php:7.1-fpm-alpine
 
 # PHP config
 ADD conf/symfony.ini /usr/local/etc/php/conf.d
-RUN apt-get update && apt-get install -y \
-        zlib1g-dev \
-        libicu-dev \
-        libfreetype6-dev \
-        libjpeg62-turbo-dev \
+RUN apk update && apk add \
+        zlib-dev \
+        icu-dev \
+        freetype-dev \
+        libjpeg-turbo-dev \
         libmcrypt-dev \
-        libpng12-dev \
+        libpng-dev \
         g++ \
-        libcurl4-gnutls-dev \
-    && docker-php-ext-install -j$(nproc) iconv mcrypt \
-    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
-    && docker-php-ext-install -j$(nproc) gd
-RUN pecl install redis-3.1.3 \
-    && pecl install xdebug-2.5.0 \
-    && docker-php-ext-enable redis xdebug \
-    && docker-php-ext-configure intl \
-    && docker-php-ext-install intl pdo pdo_mysql zip mbstring curl
+        curl-dev \
+        autoconf \
+        make
+
+RUN docker-php-ext-install iconv mcrypt \
+&& docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+&& docker-php-ext-install gd \
+&& pecl install redis-3.1.3 \
+&& pecl install xdebug-2.5.0 \
+&& docker-php-ext-enable redis xdebug \
+&& docker-php-ext-configure intl \
+&& docker-php-ext-install intl pdo pdo_mysql zip mbstring curl
 
 # Install composer
 RUN curl -s https://getcomposer.org/installer | php
 RUN mv composer.phar /usr/local/bin/composer
 
 # Install git
-RUN apt-get update && apt-get install -y git
+RUN apk update && apk add git
 
 # Installing composer global dependencies
 ENV COMPOSER_HOME=/var/.composer
