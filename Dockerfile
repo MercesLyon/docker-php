@@ -1,12 +1,5 @@
 FROM php:7.2-fpm-alpine
 
-RUN addgroup -S --gid ${GID:1000} dockergroup
-RUN adduser -S -G dockergroup -u ${UID:1000} dockeruser
-
-RUN sed -i \
-	-e 's/^user = www-data/user = dockeruser/' \
-	-e 's/^group = www-data/group = dockergroup/' /usr/local/etc/php-fpm.d/www.conf
-
 # Install deps
 RUN apk add --no-cache $PHPIZE_DEPS autoconf c-client cmake curl git g++ mysql-client openssh-client python \
     cyrus-sasl-dev icu-dev icu-libs imap imap-dev libmcrypt libmcrypt-dev libmemcached libmemcached-dev \
