@@ -14,7 +14,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 RUN composer global --no-interaction require symfony/var-dumper friendsofphp/php-cs-fixer phpmd/phpmd
 RUN echo "auto_prepend_file=/usr/local/bin/.composer/vendor/autoload.php" >> /usr/local/etc/php/conf.d/symfony.ini
 
-COPY config/xdebug.ini .
+COPY ./conf/xdebug.ini .
 RUN cat xdebug.ini >> /usr/local/etc/php/docker-php-ext-xdebug.ini
 
 COPY entrypoint.sh /usr/local/bin/
