@@ -12,7 +12,7 @@ RUN apk add --no-cache $PHPIZE_DEPS autoconf c-client cmake curl git g++ mysql-c
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 COPY conf/symfony.ini /usr/local/etc/php/conf.d/
-RUN if [ -f "/home/dockeruser/.composer/vendor/autoload.php" ]; then echo "auto_prepend_file=/home/dockeruser/.composer/vendor/autoload.php" >> /usr/local/etc/php/conf.d/symfony.ini; if
+RUN if [ -f "/home/dockeruser/.composer/vendor/autoload.php" ]; then echo "auto_prepend_file=/home/dockeruser/.composer/vendor/autoload.php" >> /usr/local/etc/php/conf.d/symfony.ini; fi
 
 COPY conf/xdebug.ini .
 RUN cat xdebug.ini >> /usr/local/etc/php/docker-php-ext-xdebug.ini && rm xdebug.ini
