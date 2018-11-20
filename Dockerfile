@@ -1,4 +1,4 @@
-FROM php:7.2-fpm-alpine as merces
+FROM php:7.2-fpm-alpine
 
 # Install deps
 RUN apk add --no-cache $PHPIZE_DEPS autoconf c-client cmake curl git g++ mysql-client openssh-client python \
@@ -11,8 +11,8 @@ RUN apk add --no-cache $PHPIZE_DEPS autoconf c-client cmake curl git g++ mysql-c
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-RUN composer global --no-interaction require symfony/var-dumper friendsofphp/php-cs-fixer phpmd/phpmd
-RUN echo "auto_prepend_file=/home/dockeruser/.composer/vendor/autoload.php" >> /usr/local/etc/php/conf.d/symfony.ini
+COPY conf/symfony.ini /usr/local/etc/php/conf.d/
+RUN if [ -f "/home/dockeruser/.composer/vendor/autoload.php" ]; then echo "auto_prepend_file=/home/dockeruser/.composer/vendor/autoload.php" >> /usr/local/etc/php/conf.d/symfony.ini; if
 
 COPY conf/xdebug.ini .
-RUN cat xdebug.ini >> /usr/local/etc/php/docker-php-ext-xdebug.ini
+RUN cat xdebug.ini >> /usr/local/etc/php/docker-php-ext-xdebug.ini && rm xdebug.ini
